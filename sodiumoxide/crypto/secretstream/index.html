@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `secretstream` mod in crate `sodiumoxide`."><meta name="keywords" content="rust, rustlang, rust-lang, secretstream"><title>sodiumoxide::crypto::secretstream - Rust</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Module secretstream</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li></ul></div><p class='location'><a href='../../index.html'>sodiumoxide</a>::<wbr><a href='../index.html'>crypto</a></p><script>window.sidebarCurrent = {name: 'secretstream', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../../src/sodiumoxide/crypto/secretstream/mod.rs.html#1-327' title='goto source code'>[src]</a></span><span class='in-band'>Module <a href='../../index.html'>sodiumoxide</a>::<wbr><a href='../index.html'>crypto</a>::<wbr><a class="mod" href=''>secretstream</a></span></h1><div class='docblock'><p>Stream encryption/file encryption</p>
+<p>This high-level API encrypts a sequence of messages, or a single message split into an arbitrary
+number of chunks, using a secret key, with the following properties:</p>
+<ul>
+<li>Messages cannot be truncated, removed, reordered, duplicated or modified without this being
+detected by the decryption functions.</li>
+<li>The same sequence encrypted twice will produce different ciphertexts.</li>
+<li>An authentication tag is added to each encrypted message: stream corruption will be detected
+early, without having to read the stream until the end.</li>
+<li>Each message can include additional data (ex: timestamp, protocol version) in the computation
+of the authentication tag.</li>
+<li>Messages can have different sizes.</li>
+<li>There are no practical limits to the total length of the stream,
+or to the total number of individual messages.</li>
+<li>Ratcheting: at any point in the stream, it is possible to &quot;forget&quot; the key used to encrypt
+the previous messages, and switch to a new key.</li>
+</ul>
+<p>This API can be used to securely send an ordered sequence of messages to a peer.
+Since the length of the stream is not limited, it can also be used to encrypt files
+regardless of their size.</p>
+<p>It transparently generates nonces and automatically handles key rotation.</p>
+<p>The <code>crypto_secretstream_*()</code> API was introduced in libsodium 1.0.14.</p>
+<h1 id="example-encryption" class="section-header"><a href="#example-encryption">Example (encryption)</a></h1>
+<p>TODO: Fill in when Rust API stabilizes.</p>
+<h1 id="type-safety" class="section-header"><a href="#type-safety">Type safety</a></h1>
+<p>The <code>Stream</code> struct abstracts over the inner state from libsodium, providing
+type hints.</p>
+<p>For example, the following code cannot compile, since <code>Stream&lt;M&gt;</code> is
+parameterized by a <code>StreamMode</code>. And <code>push</code>, <code>pull</code> are only implemented for
+<code>Stream&lt;Push&gt;</code> and <code>Stream&lt;Pull&gt;</code> respectively.</p>
+
+<div class='information'><div class='tooltip compile_fail'>ⓘ<span class='tooltiptext'>This example deliberately fails to compile</span></div></div><pre class="rust rust-example-rendered compile_fail">
+<span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">secretstream</span>:: <span class="ident">oop</span> <span class="kw">as</span> <span class="ident">secretstream</span>;
+
+<span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">secretstream</span>::<span class="ident">Key</span>::<span class="ident">new</span>();
+<span class="kw">let</span> (<span class="ident">stream</span>, <span class="ident">_header</span>) <span class="op">=</span> <span class="ident">secretstream</span>::<span class="ident">init_push</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>).<span class="ident">unwrap</span>();
+<span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">stream</span>.<span class="ident">pull</span>(<span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>).<span class="ident">unwrap</span>();</pre>
+<p>Which fails with something like:
+<code>error[E0599]: no method named `pull` found for type `Stream&lt;Push&gt;` in the current scope</code></p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Re-exports</a></h2>
+<table><tr><td><code>pub use self::<a class="mod" href="../../../sodiumoxide/crypto/secretstream/xchacha20poly1305/index.html" title="mod sodiumoxide::crypto::secretstream::xchacha20poly1305">xchacha20poly1305</a>::*;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="xchacha20poly1305/index.html"
+                                  title='mod sodiumoxide::crypto::secretstream::xchacha20poly1305'>xchacha20poly1305</a></td>
+                           <td class='docblock-short'>
+                                <p><code>crypto_secretstream_xchacha20poly1305</code></p>
+
+                           </td>
+                       </tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../../";window.currentCrate = "sodiumoxide";</script><script src="../../../aliases.js"></script><script src="../../../main.js"></script><script defer src="../../../search-index.js"></script></body></html>

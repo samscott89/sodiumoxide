@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["MessageBuilder","A builder for producing secret stream messages with the correct tags and authenticated data."]]});
